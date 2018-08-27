@@ -32,12 +32,25 @@ error: unsatisfied lifetime constraints
   --> $DIR/regions-close-object-into-object-4.rs:19:51
    |
 LL |   fn i<'a, T, U>(v: Box<A<U>+'a>) -> Box<X+'static> {
-   |  ______--___________________________________________^
-   | |      |
+   |  ______--__-________________________________________^
+   | |      |   |
+   | |      |   lifetime `T` defined here
    | |      lifetime `'a` defined here
 LL | |     box B(&*v) as Box<X> //~ ERROR cannot infer
 LL | | }
-   | |_^ returning this value requires that `'a` must outlive `'static`
+   | |_^ requires that `'a` must outlive `T`
+
+error: unsatisfied lifetime constraints
+  --> $DIR/regions-close-object-into-object-4.rs:19:51
+   |
+LL |   fn i<'a, T, U>(v: Box<A<U>+'a>) -> Box<X+'static> {
+   |  ______--_____-_____________________________________^
+   | |      |      |
+   | |      |      lifetime `U` defined here
+   | |      lifetime `'a` defined here
+LL | |     box B(&*v) as Box<X> //~ ERROR cannot infer
+LL | | }
+   | |_^ requires that `'a` must outlive `U`
 
 error[E0310]: the parameter type `U` may not live long enough
   --> $DIR/regions-close-object-into-object-4.rs:20:5
@@ -55,6 +68,14 @@ LL |     box B(&*v) as Box<X> //~ ERROR cannot infer
    |
    = help: consider adding an explicit lifetime bound `U: 'static`...
 
+error: unsatisfied lifetime constraints
+  --> $DIR/regions-close-object-into-object-4.rs:20:11
+   |
+LL | fn i<'a, T, U>(v: Box<A<U>+'a>) -> Box<X+'static> {
+   |      -- lifetime `'a` defined here
+LL |     box B(&*v) as Box<X> //~ ERROR cannot infer
+   |           ^^^ cast requires that `'a` must outlive `'static`
+
 error[E0597]: `*v` does not live long enough
   --> $DIR/regions-close-object-into-object-4.rs:20:11
    |
@@ -65,7 +86,7 @@ LL | }
    |
    = note: borrowed value must be valid for the static lifetime...
 
-error: aborting due to 4 previous errors
+error: aborting due to 6 previous errors
 
 Some errors occurred: E0310, E0597.
 For more information about an error, try `rustc --explain E0310`.

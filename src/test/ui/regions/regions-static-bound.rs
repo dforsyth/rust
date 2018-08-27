@@ -25,9 +25,11 @@ fn error(u: &(), v: &()) {
     static_id(&u); //[ll]~ ERROR explicit lifetime required in the type of `u` [E0621]
     //[nll]~^ WARNING not reporting region error due to nll
     //[nll]~| ERROR explicit lifetime required in the type of `u` [E0621]
+    //[nll]~| ERROR unsatisfied lifetime constraints
     static_id_indirect(&v); //[ll]~ ERROR explicit lifetime required in the type of `v` [E0621]
     //[nll]~^ WARNING not reporting region error due to nll
     //[nll]~| ERROR explicit lifetime required in the type of `v` [E0621]
+    //[nll]~| ERROR unsatisfied lifetime constraints
 }
 
 fn main() {}

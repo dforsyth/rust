@@ -22,7 +22,8 @@ where
     for<'b> &'b T: A,
     <&'static T as A>::X: Sized
 {
-    let _x = *s; //~ ERROR
+    let _x = *s; //~ ERROR unsatisfied lifetime constraints
+    //~| ERROR borrowed data escapes outside of function
 }
 
 fn main() {}
