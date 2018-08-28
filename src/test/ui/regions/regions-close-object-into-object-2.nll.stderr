@@ -8,12 +8,21 @@ error: unsatisfied lifetime constraints
   --> $DIR/regions-close-object-into-object-2.rs:19:57
    |
 LL |   fn g<'a, T: 'static>(v: Box<A<T>+'a>) -> Box<X+'static> {
-   |  ______--_________________________________________________^
-   | |      |
+   |  ______--__-______________________________________________^
+   | |      |   |
+   | |      |   lifetime `T` defined here
    | |      lifetime `'a` defined here
 LL | |     box B(&*v) as Box<X> //~ ERROR cannot infer
 LL | | }
-   | |_^ returning this value requires that `'a` must outlive `'static`
+   | |_^ requires that `'a` must outlive `T`
+
+error: unsatisfied lifetime constraints
+  --> $DIR/regions-close-object-into-object-2.rs:20:11
+   |
+LL | fn g<'a, T: 'static>(v: Box<A<T>+'a>) -> Box<X+'static> {
+   |      -- lifetime `'a` defined here
+LL |     box B(&*v) as Box<X> //~ ERROR cannot infer
+   |           ^^^ cast requires that `'a` must outlive `'static`
 
 error[E0597]: `*v` does not live long enough
   --> $DIR/regions-close-object-into-object-2.rs:20:11
@@ -25,6 +34,6 @@ LL | }
    |
    = note: borrowed value must be valid for the static lifetime...
 
-error: aborting due to 2 previous errors
+error: aborting due to 3 previous errors
 
 For more information about this error, try `rustc --explain E0597`.

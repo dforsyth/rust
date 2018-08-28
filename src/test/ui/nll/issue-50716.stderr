@@ -1,11 +1,22 @@
+error: unsatisfied lifetime constraints
+  --> $DIR/issue-50716.rs:25:9
+   |
+LL | fn foo<'a, T: 'static>(s: Box<<&'a T as A>::X>)
+   |        --  - lifetime `T` defined here
+   |        |
+   |        lifetime `'a` defined here
+...
+LL |     let _x = *s; //~ ERROR unsatisfied lifetime constraints
+   |         ^^ requires that `'a` must outlive `T`
+
 error: borrowed data escapes outside of function
   --> $DIR/issue-50716.rs:25:14
    |
 LL | fn foo<'a, T: 'static>(s: Box<<&'a T as A>::X>)
    |                        - `s` is a reference that is only valid in the function body
 ...
-LL |     let _x = *s; //~ ERROR
+LL |     let _x = *s; //~ ERROR unsatisfied lifetime constraints
    |              ^^ `s` escapes the function body here
 
-error: aborting due to previous error
+error: aborting due to 2 previous errors
 
